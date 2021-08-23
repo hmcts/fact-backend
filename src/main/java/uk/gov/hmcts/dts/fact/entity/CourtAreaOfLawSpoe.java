@@ -7,13 +7,13 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "search_courtareaoflaw")
+@Table(name = "search_courtareaoflawspoe")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CourtAreaOfLaw {
+public class CourtAreaOfLawSpoe {
     @Id
-    @SequenceGenerator(name = "seq-gen", sequenceName = "search_courtareaoflaw_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "seq-gen", sequenceName = "search_courtareaoflawspoe_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq-gen")
     private Integer id;
 
@@ -24,9 +24,4 @@ public class CourtAreaOfLaw {
     @OneToOne()
     @JoinColumn(name = "court_id")
     private Court court;
-
-    public CourtAreaOfLaw(final AreaOfLaw areaOfLaw, final Court court) {
-        this.areaOfLaw = areaOfLaw;
-        this.court = court;
-    }
 }

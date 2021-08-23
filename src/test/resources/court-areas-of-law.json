@@ -7,7 +7,7 @@
   {
     "id": 2,
     "name": "AreaOfLaw2",
-    "singlePointEntry": true
+    "singlePointEntry": false
   },
   {
     "id": 3,

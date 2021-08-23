@@ -52,6 +52,15 @@ public class Court {
     )
     private List<AreaOfLaw> areasOfLaw;
 
+    @OneToMany
+    @JoinTable(
+        name = "search_courtareaoflawspoe",
+        joinColumns = @JoinColumn(name = COURT_ID),
+        inverseJoinColumns = @JoinColumn(name = "area_of_law_id")
+    )
+    private List<AreaOfLaw> areasOfLawSpoe;
+
+
     @ManyToMany
     @JoinTable(
         name = "search_courtcourttype",
@@ -116,6 +125,10 @@ public class Court {
             .orElseGet(Stream::empty)
             .sorted(comparing(AreaOfLaw::getName))
             .collect(Collectors.toList());
+    }
+
+    public List<String> getAreasOfLawSpoe() {
+        return areasOfLawSpoe.stream().map(AreaOfLaw::getName).collect(Collectors.toList());
     }
 
     public boolean isInPerson() {

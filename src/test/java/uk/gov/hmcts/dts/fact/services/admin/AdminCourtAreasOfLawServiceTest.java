@@ -15,6 +15,7 @@ import uk.gov.hmcts.dts.fact.entity.CourtAreaOfLaw;
 import uk.gov.hmcts.dts.fact.exception.NotFoundException;
 import uk.gov.hmcts.dts.fact.model.admin.AreaOfLaw;
 import uk.gov.hmcts.dts.fact.repositories.CourtAreaOfLawRepository;
+import uk.gov.hmcts.dts.fact.repositories.CourtAreaOfLawSpoeRepository;
 import uk.gov.hmcts.dts.fact.repositories.CourtRepository;
 
 import java.io.IOException;
@@ -47,6 +48,9 @@ public class AdminCourtAreasOfLawServiceTest {
     @MockBean
     private CourtAreaOfLawRepository courtAreaOfLawRepository;
 
+    @MockBean
+    private CourtAreaOfLawSpoeRepository courtAreaOfLawSpoeRepository;
+
     @Mock
     private static Court court;
 
@@ -55,7 +59,6 @@ public class AdminCourtAreasOfLawServiceTest {
 
     @BeforeAll
     static void setUp() {
-
         uk.gov.hmcts.dts.fact.entity.AreaOfLaw areaOfLawOne = new uk.gov.hmcts.dts.fact.entity.AreaOfLaw();
         areaOfLawOne.setId(1);
         areaOfLawOne.setName("AreaOfLaw1");
@@ -66,15 +69,16 @@ public class AdminCourtAreasOfLawServiceTest {
         areaOfLawThree.setId(3);
         areaOfLawThree.setName("AreaOfLaw3");
 
-        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawOne, court, false));
-        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawTwo, court, true));
-        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawThree, court, false));
+        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawOne, court));
+        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawTwo, court));
+        COURT_AREA_OF_LAWS.add(new CourtAreaOfLaw(areaOfLawThree, court));
     }
 
     @Test
     void shouldReturnCourtAreasOfLaw() {
         when(courtRepository.findBySlug(COURT_SLUG)).thenReturn(Optional.of(court));
         when(courtAreaOfLawRepository.getCourtAreaOfLawByCourtId(anyInt())).thenReturn(COURT_AREA_OF_LAWS);
+        when(courtAreaOfLawSpoeRepository.getAllByCourtIdAndAreaOfLawId(anyInt(), any())).thenReturn(new ArrayList<>());
 
         assertThat(adminCourtAreasOfLawService.getCourtAreasOfLawBySlug(COURT_SLUG))
             .hasSize(COURT_AREAS_OF_LAW_COUNT)
@@ -85,6 +89,7 @@ public class AdminCourtAreasOfLawServiceTest {
     @Test
     void shouldReturnNotFoundWhenRetrievingCourtLocalAuthoritiesForNonExistentCourt() {
         when(courtRepository.findBySlug(COURT_SLUG)).thenReturn(Optional.empty());
+        when(courtAreaOfLawSpoeRepository.getAllByCourtIdAndAreaOfLawId(anyInt(), any())).thenReturn(new ArrayList<>());
 
         assertThatThrownBy(() -> adminCourtAreasOfLawService.getCourtAreasOfLawBySlug(COURT_SLUG))
             .isInstanceOf(NotFoundException.class)
@@ -98,6 +103,7 @@ public class AdminCourtAreasOfLawServiceTest {
 
         when(courtRepository.findBySlug(COURT_SLUG)).thenReturn(Optional.of(court));
         when(courtAreaOfLawRepository.saveAll(any())).thenReturn(COURT_AREA_OF_LAWS);
+        when(courtAreaOfLawSpoeRepository.getAllByCourtIdAndAreaOfLawId(anyInt(), any())).thenReturn(new ArrayList<>());
 
         final List<AreaOfLaw> courtAreasOfLawResult =
             adminCourtAreasOfLawService.updateAreasOfLawForCourt(COURT_SLUG, areasOfLaw);
@@ -112,6 +118,7 @@ public class AdminCourtAreasOfLawServiceTest {
     @Test
     void shouldNotUpdateCourtAreasOfLawWhenSlugNotFound() {
         when(courtRepository.findBySlug(COURT_SLUG)).thenReturn(Optional.empty());
+        when(courtAreaOfLawSpoeRepository.getAllByCourtIdAndAreaOfLawId(anyInt(), any())).thenReturn(new ArrayList<>());
 
         assertThatThrownBy(() -> adminCourtAreasOfLawService.updateAreasOfLawForCourt(COURT_SLUG, new ArrayList<>()))
             .isInstanceOf(NotFoundException.class)

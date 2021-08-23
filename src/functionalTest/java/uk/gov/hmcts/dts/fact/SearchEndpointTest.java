@@ -55,14 +55,14 @@ public class SearchEndpointTest extends FunctionalTestBase {
 
         final List<CourtWithDistance> welshCourts = welshResponse.body().jsonPath()
             .getList(".", CourtWithDistance.class);
-        assertThat(welshCourts.get(0).getAddress().getTownName()).isEqualTo("Caerdydd");
+        assertThat(welshCourts.get(0).getAddresses().get(0).getTownName()).isEqualTo("Caerdydd");
 
         final var englishResponse = doGetRequest(SEARCH_ENDPOINT + "results.json?postcode=CF10 1ET");
         assertThat(englishResponse.statusCode()).isEqualTo(OK.value());
 
         final List<CourtWithDistance> englishCourts = englishResponse.body().jsonPath()
             .getList(".", CourtWithDistance.class);
-        assertThat(englishCourts.get(0).getAddress().getTownName()).isEqualTo("Cardiff");
+        assertThat(englishCourts.get(0).getAddresses().get(0).getTownName()).isEqualTo("Cardiff");
     }
 
     @Test
@@ -72,14 +72,14 @@ public class SearchEndpointTest extends FunctionalTestBase {
 
         final List<CourtWithDistance> welshCourts = welshResponse.body().jsonPath()
             .getList(".", CourtWithDistance.class);
-        assertThat(welshCourts.get(0).getAddress().getTownName()).isEqualTo("Caerdydd");
+        assertThat(welshCourts.get(0).getAddresses().get(0).getTownName()).isEqualTo("Caerdydd");
 
         final var englishResponse = doGetRequest(SEARCH_ENDPOINT + "results.json?q=cardiff");
         assertThat(englishResponse.statusCode()).isEqualTo(OK.value());
 
         final List<CourtWithDistance> englishCourts = englishResponse.body().jsonPath()
             .getList(".", CourtWithDistance.class);
-        assertThat(englishCourts.get(0).getAddress().getTownName()).isEqualTo("Cardiff");
+        assertThat(englishCourts.get(0).getAddresses().get(0).getTownName()).isEqualTo("Cardiff");
     }
 
     @Test

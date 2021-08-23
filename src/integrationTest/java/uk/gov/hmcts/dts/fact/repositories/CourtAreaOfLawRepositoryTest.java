@@ -42,9 +42,9 @@ public class CourtAreaOfLawRepositoryTest {
         areasOfLawRepository.flush();
 
         courtAreaOfLawRepository.save(new CourtAreaOfLaw(
-            areaOfLaw, court.get(), true));
+            areaOfLaw, court.get()));
         courtAreaOfLawRepository.save(new CourtAreaOfLaw(
-            areaOfLaw2, court.get(), true));
+            areaOfLaw2, court.get()));
         courtAreaOfLawRepository.flush();
 
         final SoftAssertions softly = new SoftAssertions();
