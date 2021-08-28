@@ -253,7 +253,7 @@ dependencies {
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
-  integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.15.3'
+  integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: '1.16.0'
   integrationTestImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: '1.16.0'
 
 
