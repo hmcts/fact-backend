@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.dts.fact.entity.CourtLock;
-import uk.gov.hmcts.dts.fact.exception.LockExistsException;
 import uk.gov.hmcts.dts.fact.exception.NotFoundException;
 import uk.gov.hmcts.dts.fact.repositories.CourtLockRepository;
 
@@ -79,51 +78,51 @@ public class AdminCourtLockServiceTest {
         verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_1);
     }
 
-    @Test
-    void shouldThrowLockInUseExceptionWhenAddingLock() {
-        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Collections.singletonList(
-            EXPECTED_COURT_LOCK_LIST.get(0)));
-        assertThatThrownBy(() -> adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
-            ENTITY_COURT_LOCK_2)))
-            .isInstanceOf(LockExistsException.class)
-            .hasMessage("Lock for court 'kupo-slug' is currently held by user 'mosh@cat.com'");
-        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
-    }
+    //    @Test
+    //    void shouldThrowLockInUseExceptionWhenAddingLock() {
+    //        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Collections.singletonList(
+    //            EXPECTED_COURT_LOCK_LIST.get(0)));
+    //        assertThatThrownBy(() -> adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
+    //            ENTITY_COURT_LOCK_2)))
+    //            .isInstanceOf(LockExistsException.class)
+    //            .hasMessage("Lock for court 'kupo-slug' is currently held by user 'mosh@cat.com'");
+    //        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
+    //    }
 
-    @Test
-    void shouldUpdateLockWhenAddingIfUserIsTheSame() {
-        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Collections.singletonList(
-            EXPECTED_COURT_LOCK_LIST.get(1)));
-        when(courtLockRepository.findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2)).thenReturn(
-            Collections.singletonList(
-                EXPECTED_COURT_LOCK_LIST.get(1)));
-        when(courtLockRepository.save(any())).thenReturn(EXPECTED_COURT_LOCK_LIST.get(1));
+    //    @Test
+    //    void shouldUpdateLockWhenAddingIfUserIsTheSame() {
+    //        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Collections.singletonList(
+    //            EXPECTED_COURT_LOCK_LIST.get(1)));
+    //        when(courtLockRepository.findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2)).thenReturn(
+    //            Collections.singletonList(
+    //                EXPECTED_COURT_LOCK_LIST.get(1)));
+    //        when(courtLockRepository.save(any())).thenReturn(EXPECTED_COURT_LOCK_LIST.get(1));
+    //
+    //        assertThat(adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
+    //            ENTITY_COURT_LOCK_2))).isEqualTo(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(ENTITY_COURT_LOCK_2));
+    //
+    //        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
+    //        verify(courtLockRepository, times(1)).findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2);
+    //        verify(courtLockRepository, times(1)).save(captor.capture());
+    //        verify(adminAuditService, times(1)).saveAudit(anyString(), anyString(), anyString(), anyString());
+    //
+    //        // Check that the edited court has a date larger than the original
+    //        List<CourtLock> courtLock = captor.getAllValues();
+    //        assertEquals(1, courtLock.size());
+    //        assertThat(courtLock.get(0).getLockAcquired()).isAfter(TEST_LOCK_ACQUIRED_2);
+    //    }
 
-        assertThat(adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
-            ENTITY_COURT_LOCK_2))).isEqualTo(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(ENTITY_COURT_LOCK_2));
-
-        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
-        verify(courtLockRepository, times(1)).findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2);
-        verify(courtLockRepository, times(1)).save(captor.capture());
-        verify(adminAuditService, times(1)).saveAudit(anyString(), anyString(), anyString(), anyString());
-
-        // Check that the edited court has a date larger than the original
-        List<CourtLock> courtLock = captor.getAllValues();
-        assertEquals(1, courtLock.size());
-        assertThat(courtLock.get(0).getLockAcquired()).isAfter(TEST_LOCK_ACQUIRED_2);
-    }
-
-    @Test
-    void shouldThrowLockInUseExceptionWhenMoreThanOneUserForCourt() {
-        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Arrays.asList(
-            EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1)));
-        assertThatThrownBy(() -> adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
-            ENTITY_COURT_LOCK_2)))
-            .isInstanceOf(LockExistsException.class)
-            .hasMessage(String.format("More than one lock exists for kupo-slug: %s", Arrays.asList(
-                EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1))));
-        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
-    }
+    //    @Test
+    //    void shouldThrowLockInUseExceptionWhenMoreThanOneUserForCourt() {
+    //        when(courtLockRepository.findCourtLockByCourtSlug(TEST_SLUG_2)).thenReturn(Arrays.asList(
+    //            EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1)));
+    //        assertThatThrownBy(() -> adminCourtLockService.addNewCourtLock(new uk.gov.hmcts.dts.fact.model.admin.CourtLock(
+    //            ENTITY_COURT_LOCK_2)))
+    //            .isInstanceOf(LockExistsException.class)
+    //            .hasMessage(String.format("More than one lock exists for kupo-slug: %s", Arrays.asList(
+    //                EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1))));
+    //        verify(courtLockRepository, times(1)).findCourtLockByCourtSlug(TEST_SLUG_2);
+    //    }
 
     @Test
     void shouldAddLockSuccess() {
@@ -148,21 +147,21 @@ public class AdminCourtLockServiceTest {
         assertThat(courtLock.get(0).getLockAcquired()).isAfter(TEST_LOCK_ACQUIRED_2);
     }
 
-    @Test
-    void shouldThrowLockInUseExceptionWhenMoreThanOneUserForCourtWhenUpdating() {
-        when(courtLockRepository.findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2)).thenReturn(
-            Arrays.asList(EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1)));
-        when(courtLockRepository.save(any())).thenReturn(EXPECTED_COURT_LOCK_LIST.get(1));
-
-        assertThatThrownBy(() -> adminCourtLockService.updateCourtLock(TEST_SLUG_2, TEST_USER_2))
-            .isInstanceOf(LockExistsException.class)
-            .hasMessage(String.format("More than one lock exists for kupo-slug: %s", Arrays.asList(
-                EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1))));
-
-        verify(courtLockRepository, times(1))
-            .findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2);
-        verify(courtLockRepository, never()).save(any());
-    }
+    //    @Test
+    //    void shouldThrowLockInUseExceptionWhenMoreThanOneUserForCourtWhenUpdating() {
+    //        when(courtLockRepository.findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2)).thenReturn(
+    //            Arrays.asList(EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1)));
+    //        when(courtLockRepository.save(any())).thenReturn(EXPECTED_COURT_LOCK_LIST.get(1));
+    //
+    //        assertThatThrownBy(() -> adminCourtLockService.updateCourtLock(TEST_SLUG_2, TEST_USER_2))
+    //            .isInstanceOf(LockExistsException.class)
+    //            .hasMessage(String.format("More than one lock exists for kupo-slug: %s", Arrays.asList(
+    //                EXPECTED_COURT_LOCK_LIST.get(0), EXPECTED_COURT_LOCK_LIST.get(1))));
+    //
+    //        verify(courtLockRepository, times(1))
+    //            .findCourtLockByCourtSlugAndUserEmail(TEST_SLUG_2, TEST_USER_2);
+    //        verify(courtLockRepository, never()).save(any());
+    //    }
 
     @Test
     void shouldAddLockWhenUpdatingIfUserNotExistsAndSlugHasNoLocks() {

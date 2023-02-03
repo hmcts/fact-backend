@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class AdminCourtLockService {
     private final CourtLockRepository courtLockRepository;
     private final AdminAuditService adminAuditService;
-    private static final int LOCK_AMOUNT_PER_COURT = 1;
+    private static final int LOCK_AMOUNT_PER_COURT = 100;
 
     @Autowired
     public AdminCourtLockService(final CourtLockRepository courtLockRepository,
@@ -71,7 +71,7 @@ public class AdminCourtLockService {
             courtLockRepository.findCourtLockByCourtSlug(courtSlug);
         int courtListSize = courtLockEntityList.size();
 
-        if (courtListSize == LOCK_AMOUNT_PER_COURT && !courtLockEntityList.get(0).getUserEmail().equals(courtUserEmail)) {
+        if (courtListSize >= LOCK_AMOUNT_PER_COURT && !courtLockEntityList.get(0).getUserEmail().equals(courtUserEmail)) {
             // If the name doesn't match, but we have a lock for the court, return with an error code
             throw new LockExistsException(String.format("Lock for court '%s' is currently held by user '%s'",
                                                         courtSlug, courtLockEntityList.get(0).getUserEmail()

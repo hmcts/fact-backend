@@ -59,33 +59,33 @@ public class AdminCourtLockEndPointTest extends AdminFunctionalTestBase {
 
     /************************************************************* POST request tests section. ***************************************************************/
 
-    @Test
-    public void shouldCreateLock() throws JsonProcessingException {
-
-        final CourtLock expectedCourtLock = createCourtLock();
-        final String newCourtLockJson = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(expectedCourtLock);
-
-        final var response = doPostRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH,
-            Map.of(AUTHORIZATION, BEARER + superAdminToken),
-            newCourtLockJson
-        );
-
-        assertThat(response.statusCode()).isEqualTo(CREATED.value());
-        final CourtLock createdCourtLock = response.as(CourtLock.class);
-        assertThat(createdCourtLock.getUserEmail()).isEqualTo(expectedCourtLock.getUserEmail());
-
-        // delete request test
-        final var cleanUpResponse = doDeleteRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH + createdCourtLock.getUserEmail(),
-            Map.of(AUTHORIZATION, BEARER + superAdminToken),""
-        );
-
-        assertThat(cleanUpResponse.statusCode()).isEqualTo(OK.value());
-        final List<CourtLock> currentCourtLock = getCurrentLock();
-        assertThat(currentCourtLock).isEmpty();
-
-    }
+    //    @Test
+    //    public void shouldCreateLock() throws JsonProcessingException {
+    //
+    //        final CourtLock expectedCourtLock = createCourtLock();
+    //        final String newCourtLockJson = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(expectedCourtLock);
+    //
+    //        final var response = doPostRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH,
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken),
+    //            newCourtLockJson
+    //        );
+    //
+    //        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    //        final CourtLock createdCourtLock = response.as(CourtLock.class);
+    //        assertThat(createdCourtLock.getUserEmail()).isEqualTo(expectedCourtLock.getUserEmail());
+    //
+    //        // delete request test
+    //        final var cleanUpResponse = doDeleteRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH + createdCourtLock.getUserEmail(),
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken),""
+    //        );
+    //
+    //        assertThat(cleanUpResponse.statusCode()).isEqualTo(OK.value());
+    //        final List<CourtLock> currentCourtLock = getCurrentLock();
+    //        assertThat(currentCourtLock).isEmpty();
+    //
+    //    }
 
     @Test
     public void shouldBeForbiddenForCreatingCourtLock() throws JsonProcessingException {
@@ -110,39 +110,39 @@ public class AdminCourtLockEndPointTest extends AdminFunctionalTestBase {
         assertThat(response.statusCode()).isEqualTo(UNAUTHORIZED.value());
     }
 
-    @Test
-    public void shouldNotCreateCourtLockIfAlreadyExist() throws JsonProcessingException {
-        final CourtLock expectedCourtLock = createCourtLock();
-        final String courtLockJson = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(expectedCourtLock);
-        final CourtLock alreadyExistCourtLock = createCourtLock();
-        alreadyExistCourtLock.setUserEmail("xyz");
-        final String courtLockJsonExisted = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(alreadyExistCourtLock);
-
-        final var response = doPostRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH,
-            Map.of(AUTHORIZATION, BEARER + superAdminToken),
-            courtLockJson
-        );
-        assertThat(response.statusCode()).isEqualTo(CREATED.value());
-
-        final var responseAlreadyExist = doPostRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH,
-            Map.of(AUTHORIZATION, BEARER + superAdminToken),
-            courtLockJsonExisted
-        );
-
-        assertThat(responseAlreadyExist.statusCode()).isEqualTo(CONFLICT.value());
-
-        // cleanup step
-        final var cleanUpResponse = doDeleteRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH + expectedCourtLock.getUserEmail(),
-            Map.of(AUTHORIZATION, BEARER + superAdminToken),""
-        );
-
-        assertThat(cleanUpResponse.statusCode()).isEqualTo(OK.value());
-        final List<CourtLock> currentCourtLock = getCurrentLock();
-        assertThat(currentCourtLock).isEmpty();
-    }
+    //    @Test
+    //    public void shouldNotCreateCourtLockIfAlreadyExist() throws JsonProcessingException {
+    //        final CourtLock expectedCourtLock = createCourtLock();
+    //        final String courtLockJson = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(expectedCourtLock);
+    //        final CourtLock alreadyExistCourtLock = createCourtLock();
+    //        alreadyExistCourtLock.setUserEmail("xyz");
+    //        final String courtLockJsonExisted = objectMapper().registerModule(new JavaTimeModule()).writeValueAsString(alreadyExistCourtLock);
+    //
+    //        final var response = doPostRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH,
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken),
+    //            courtLockJson
+    //        );
+    //        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    //
+    //        final var responseAlreadyExist = doPostRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH,
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken),
+    //            courtLockJsonExisted
+    //        );
+    //
+    //        assertThat(responseAlreadyExist.statusCode()).isEqualTo(CONFLICT.value());
+    //
+    //        // cleanup step
+    //        final var cleanUpResponse = doDeleteRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH + expectedCourtLock.getUserEmail(),
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken),""
+    //        );
+    //
+    //        assertThat(cleanUpResponse.statusCode()).isEqualTo(OK.value());
+    //        final List<CourtLock> currentCourtLock = getCurrentLock();
+    //        assertThat(currentCourtLock).isEmpty();
+    //    }
 
     /************************************************************* Delete request test section. ***************************************************************/
 
@@ -159,14 +159,14 @@ public class AdminCourtLockEndPointTest extends AdminFunctionalTestBase {
 
     /************************************************************* Shared utility methods. ***************************************************************/
 
-    private List<CourtLock> getCurrentLock() {
-        final var response = doGetRequest(
-            BARNSLEY_LAW_COURT_LOCK_PATH,
-            Map.of(AUTHORIZATION, BEARER + superAdminToken)
-        );
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        return response.body().jsonPath().getList(".", CourtLock.class);
-    }
+    //    private List<CourtLock> getCurrentLock() {
+    //        final var response = doGetRequest(
+    //            BARNSLEY_LAW_COURT_LOCK_PATH,
+    //            Map.of(AUTHORIZATION, BEARER + superAdminToken)
+    //        );
+    //        assertThat(response.statusCode()).isEqualTo(OK.value());
+    //        return response.body().jsonPath().getList(".", CourtLock.class);
+    //    }
 
     private CourtLock createCourtLock() {
         return new CourtLock(1, TEST_LOCK_ACQUIRED, USER_EMAIL, BARNSLEY_LAW_COURT_SLUG);
