@@ -43,7 +43,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${OAUTH_PROVIDER_URL:https://idam-api.aat.platform.hmcts.net}/jwks
+          jwk-set-uri: ${OAUTH_PROVIDER_URL:https://login.microsoftonline.com/common/discovery/keys}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
